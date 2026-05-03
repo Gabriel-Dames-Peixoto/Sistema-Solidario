@@ -4,67 +4,246 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistema Solidario</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="hero">
-      <div>
-        <p class="eyebrow">ODS 1 - Erradicacao da Pobreza</p>
-        <h1>Sistema Solidario</h1>
-        <p class="lead">
-          Plataforma para aproximar doacoes e necessidades com filtros por regiao,
-          matching inteligente e relatorios de impacto social.
-        </p>
-      </div>
-      <div class="hero-actions">
-        <button id="refreshDashboard">Atualizar dashboard</button>
-        <a class="ghost-button" href="/api/reports/export.pdf" target="_blank" rel="noreferrer">Baixar PDF</a>
-        <a class="ghost-button" href="/api/reports/export.xlsx" target="_blank" rel="noreferrer">Baixar Excel</a>
-      </div>
-    </header>
-
-    <main class="layout">
-      <section class="card">
-        <h2>Dashboard</h2>
-        <div id="dashboard" class="metrics"></div>
-      </section>
-
-      <section class="card">
-        <div class="section-title">
-          <h2>Filtros Geograficos</h2>
-          <div class="filters">
-            <select id="regionFilter">
-              <option value="">Todas as regioes</option>
-              <option value="Centro">Centro</option>
-              <option value="Zona Norte">Zona Norte</option>
-              <option value="Zona Sul">Zona Sul</option>
-            </select>
-            <input id="distanceFilter" type="number" min="1" step="0.5" placeholder="Distancia maxima" />
-            <button id="applyFilters">Aplicar</button>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">ODS 1 - Erradicacao da Pobreza</p>
+          <h1>Sistema Solidario</h1>
+          <p class="lead">
+            Uma plataforma para conectar doacoes e necessidades reais com dados
+            dinamicos, filtros geograficos por coordenadas e sugestoes de matching
+            baseadas em grafos.
+          </p>
+          <div class="hero-tags">
+            <span>API Python + JWT</span>
+            <span>Dashboard em JSON</span>
+            <span>Relatorios PDF/Excel</span>
           </div>
         </div>
-        <p class="hint">
-          O filtro usa coordenadas no plano cartesiano para aproximar doadores e beneficiarios por distancia.
-        </p>
-      </section>
 
-      <section class="card">
-        <h2>Itens doados</h2>
-        <div id="itemsList" class="stack"></div>
-      </section>
+        <aside class="hero-panel">
+          <p class="panel-kicker">Acesso de demonstracao</p>
+          <strong>doador@solidario.org</strong>
+          <span>Senha: 123456</span>
+          <div class="hero-actions">
+            <button id="refreshDashboard" type="button">Atualizar dados</button>
+            <a id="pdfLink" class="ghost-button" href="#" target="_blank" rel="noreferrer">Exportar PDF</a>
+            <a id="xlsxLink" class="ghost-button" href="#" target="_blank" rel="noreferrer">Exportar Excel</a>
+          </div>
+        </aside>
+      </header>
 
-      <section class="card">
-        <h2>Solicitacoes</h2>
-        <div id="requestsList" class="stack"></div>
-      </section>
+      <main class="dashboard-layout">
+        <section class="card card-highlight">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Visao geral</p>
+              <h2>Impacto do projeto</h2>
+            </div>
+          </div>
+          <div id="dashboard" class="metrics"></div>
+        </section>
 
-      <section class="card wide">
-        <h2>Matching sugerido</h2>
-        <div id="matchesList" class="stack"></div>
-      </section>
-    </main>
+        <section class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Sessao</p>
+              <h2>Login rapido</h2>
+            </div>
+          </div>
+          <form id="loginForm" class="form-grid">
+            <label class="field">
+              <span>E-mail</span>
+              <input name="email" type="email" value="doador@solidario.org" required />
+            </label>
+            <label class="field">
+              <span>Senha</span>
+              <input name="password" type="password" value="123456" required />
+            </label>
+            <button type="submit">Entrar no sistema</button>
+          </form>
+          <div id="authStatus" class="status-box">Nenhum usuario autenticado.</div>
+        </section>
 
-    <script src="/app.js"></script>
+        <section class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Analise geografica</p>
+              <h2>Filtros por regiao</h2>
+            </div>
+          </div>
+          <div class="filters-grid">
+            <label class="field">
+              <span>Regiao</span>
+              <select id="regionFilter">
+                <option value="">Todas as regioes</option>
+                <option value="Centro">Centro</option>
+                <option value="Zona Norte">Zona Norte</option>
+                <option value="Zona Sul">Zona Sul</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Distancia maxima</span>
+              <input id="distanceFilter" type="number" min="1" step="0.5" placeholder="Ex.: 5" />
+            </label>
+          </div>
+          <button id="applyFilters" type="button">Aplicar filtros</button>
+          <p class="hint">
+            O sistema considera coordenadas no plano cartesiano para aproximar doacoes
+            e solicitacoes por proximidade.
+          </p>
+        </section>
+
+        <section class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Operacoes</p>
+              <h2>Cadastrar item</h2>
+            </div>
+          </div>
+          <form id="itemForm" class="form-grid">
+            <label class="field">
+              <span>Nome do item</span>
+              <input name="title" placeholder="Ex.: Cesta basica" required />
+            </label>
+            <div class="mini-grid">
+              <label class="field">
+                <span>Categoria</span>
+                <input name="category" value="alimentos" required />
+              </label>
+              <label class="field">
+                <span>Quantidade</span>
+                <input name="quantity" type="number" min="1" value="1" required />
+              </label>
+            </div>
+            <div class="mini-grid">
+              <label class="field">
+                <span>Regiao</span>
+                <input name="region" value="Centro" required />
+              </label>
+              <label class="field">
+                <span>Coord. X</span>
+                <input name="x" type="number" step="0.1" value="2" required />
+              </label>
+              <label class="field">
+                <span>Coord. Y</span>
+                <input name="y" type="number" step="0.1" value="4" required />
+              </label>
+            </div>
+            <button type="submit">Salvar doacao</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Operacoes</p>
+              <h2>Solicitar ajuda</h2>
+            </div>
+          </div>
+          <form id="requestForm" class="form-grid">
+            <label class="field">
+              <span>Categoria</span>
+              <input name="category" value="alimentos" required />
+            </label>
+            <label class="field">
+              <span>Descricao</span>
+              <input name="description" placeholder="Ex.: Familia em inseguranca alimentar" required />
+            </label>
+            <div class="mini-grid">
+              <label class="field">
+                <span>Quantidade</span>
+                <input name="needed_quantity" type="number" min="1" value="1" required />
+              </label>
+              <label class="field">
+                <span>Regiao</span>
+                <input name="region" value="Centro" required />
+              </label>
+            </div>
+            <div class="mini-grid">
+              <label class="field">
+                <span>Coord. X</span>
+                <input name="x" type="number" step="0.1" value="3" required />
+              </label>
+              <label class="field">
+                <span>Coord. Y</span>
+                <input name="y" type="number" step="0.1" value="3" required />
+              </label>
+            </div>
+            <button type="submit">Registrar necessidade</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Acompanhamento</p>
+              <h2>Atualizar status</h2>
+            </div>
+          </div>
+          <form id="statusForm" class="form-grid">
+            <label class="field">
+              <span>ID do item</span>
+              <input name="item_id" type="number" min="1" placeholder="Ex.: 1" required />
+            </label>
+            <label class="field">
+              <span>Novo status</span>
+              <select name="status" required>
+                <option value="disponivel">disponivel</option>
+                <option value="reservado">reservado</option>
+                <option value="entregue">entregue</option>
+              </select>
+            </label>
+            <button type="submit">Atualizar item</button>
+          </form>
+          <div id="actionStatus" class="status-box">Aguardando acao.</div>
+        </section>
+
+        <section class="card card-span-2">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Dados vivos</p>
+              <h2>Matching sugerido</h2>
+            </div>
+          </div>
+          <div id="matchesList" class="stack cards-grid"></div>
+        </section>
+
+        <section class="card card-span-2">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Base social</p>
+              <h2>Itens doados</h2>
+            </div>
+          </div>
+          <div id="itemsList" class="stack cards-grid"></div>
+        </section>
+
+        <section class="card card-span-2">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Base social</p>
+              <h2>Solicitacoes</h2>
+            </div>
+          </div>
+          <div id="requestsList" class="stack cards-grid"></div>
+        </section>
+
+        <section class="card card-span-2">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">Rede cadastrada</p>
+              <h2>Usuarios</h2>
+            </div>
+          </div>
+          <div id="usersList" class="stack cards-grid"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
   </body>
 </html>
-

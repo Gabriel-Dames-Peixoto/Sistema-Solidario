@@ -57,7 +57,12 @@ def export_excel(output_path: Path, dashboard: Dict, items: List[Dict], requests
             ]
         )
 
-    workbook.save(output_path)
+    try:
+        workbook.save(output_path)
+    except PermissionError:
+        # Em alguns ambientes Windows o openpyxl salva o arquivo final, mas falha ao limpar temporarios.
+        if not output_path.exists():
+            raise
     return output_path
 
 

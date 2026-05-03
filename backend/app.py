@@ -85,7 +85,8 @@ class SolidarioHandler(BaseHTTPRequestHandler):
         region = query.get("region", [""])[0]
 
         if path == "/api/users":
-            return json_response(self, 200, {"data": filter_by_region(data["users"], region)})
+            users = [_public_user(user) for user in filter_by_region(data["users"], region)]
+            return json_response(self, 200, {"data": users})
         if path == "/api/items":
             return json_response(self, 200, {"data": filter_by_region(data["items"], region)})
         if path == "/api/requests":
@@ -116,16 +117,19 @@ class SolidarioHandler(BaseHTTPRequestHandler):
         data = load_data()
 
         if path == "/api/auth/register":
-            new_user = {
-                "id": next_id(data, "users"),
-                "name": payload["name"],
-                "email": payload["email"],
-                "password_hash": hash_password(payload["password"]),
-                "role": payload["role"],
-                "region": payload["region"],
-                "x": float(payload["x"]),
-                "y": float(payload["y"]),
-            }
+            try:
+                new_user = {
+                    "id": next_id(data, "users"),
+                    "name": payload["name"],
+                    "email": payload["email"],
+                    "password_hash": hash_password(payload["password"]),
+                    "role": payload["role"],
+                    "region": payload["region"],
+                    "x": float(payload["x"]),
+                    "y": float(payload["y"]),
+                }
+            except (KeyError, TypeError, ValueError):
+                return json_response(self, 400, {"error": "Dados invalidos para cadastro de usuario."})
             data["users"].append(new_user)
             save_data(data)
             return json_response(self, HTTPStatus.CREATED, {"message": "Usuario cadastrado com sucesso.", "user": _public_user(new_user)})
@@ -142,33 +146,39 @@ class SolidarioHandler(BaseHTTPRequestHandler):
             return json_response(self, 401, {"error": "Token JWT obrigatorio."})
 
         if path == "/api/items":
-            item = {
-                "id": next_id(data, "items"),
-                "title": payload["title"],
-                "category": payload["category"],
-                "quantity": int(payload["quantity"]),
-                "status": "disponivel",
-                "donor_id": int(payload["donor_id"]),
-                "region": payload["region"],
-                "x": float(payload["x"]),
-                "y": float(payload["y"]),
-            }
+            try:
+                item = {
+                    "id": next_id(data, "items"),
+                    "title": payload["title"],
+                    "category": payload["category"],
+                    "quantity": int(payload["quantity"]),
+                    "status": "disponivel",
+                    "donor_id": int(payload["donor_id"]),
+                    "region": payload["region"],
+                    "x": float(payload["x"]),
+                    "y": float(payload["y"]),
+                }
+            except (KeyError, TypeError, ValueError):
+                return json_response(self, 400, {"error": "Dados invalidos para cadastro do item."})
             data["items"].append(item)
             save_data(data)
             return json_response(self, HTTPStatus.CREATED, {"message": "Item cadastrado.", "item": item})
 
         if path == "/api/requests":
-            request = {
-                "id": next_id(data, "requests"),
-                "beneficiary_id": int(payload["beneficiary_id"]),
-                "category": payload["category"],
-                "description": payload["description"],
-                "needed_quantity": int(payload["needed_quantity"]),
-                "status": "aberta",
-                "region": payload["region"],
-                "x": float(payload["x"]),
-                "y": float(payload["y"]),
-            }
+            try:
+                request = {
+                    "id": next_id(data, "requests"),
+                    "beneficiary_id": int(payload["beneficiary_id"]),
+                    "category": payload["category"],
+                    "description": payload["description"],
+                    "needed_quantity": int(payload["needed_quantity"]),
+                    "status": "aberta",
+                    "region": payload["region"],
+                    "x": float(payload["x"]),
+                    "y": float(payload["y"]),
+                }
+            except (KeyError, TypeError, ValueError):
+                return json_response(self, 400, {"error": "Dados invalidos para cadastro da solicitacao."})
             data["requests"].append(request)
             save_data(data)
             return json_response(self, HTTPStatus.CREATED, {"message": "Solicitacao cadastrada.", "request": request})
@@ -218,4 +228,3 @@ if __name__ == "__main__":
     server = ThreadingHTTPServer(("127.0.0.1", 8000), SolidarioHandler)
     print("Sistema Solidario rodando em http://127.0.0.1:8000")
     server.serve_forever()
-
