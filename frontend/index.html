@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Solidario</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">ODS 1 - Erradicacao da Pobreza</p>
+        <h1>Sistema Solidario</h1>
+        <p class="lead">
+          Plataforma para aproximar doacoes e necessidades com filtros por regiao,
+          matching inteligente e relatorios de impacto social.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button id="refreshDashboard">Atualizar dashboard</button>
+        <a class="ghost-button" href="/api/reports/export.pdf" target="_blank" rel="noreferrer">Baixar PDF</a>
+        <a class="ghost-button" href="/api/reports/export.xlsx" target="_blank" rel="noreferrer">Baixar Excel</a>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2>Dashboard</h2>
+        <div id="dashboard" class="metrics"></div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">
+          <h2>Filtros Geograficos</h2>
+          <div class="filters">
+            <select id="regionFilter">
+              <option value="">Todas as regioes</option>
+              <option value="Centro">Centro</option>
+              <option value="Zona Norte">Zona Norte</option>
+              <option value="Zona Sul">Zona Sul</option>
+            </select>
+            <input id="distanceFilter" type="number" min="1" step="0.5" placeholder="Distancia maxima" />
+            <button id="applyFilters">Aplicar</button>
+          </div>
+        </div>
+        <p class="hint">
+          O filtro usa coordenadas no plano cartesiano para aproximar doadores e beneficiarios por distancia.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Itens doados</h2>
+        <div id="itemsList" class="stack"></div>
+      </section>
+
+      <section class="card">
+        <h2>Solicitacoes</h2>
+        <div id="requestsList" class="stack"></div>
+      </section>
+
+      <section class="card wide">
+        <h2>Matching sugerido</h2>
+        <div id="matchesList" class="stack"></div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
+

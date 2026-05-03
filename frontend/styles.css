@@ -1,0 +1,158 @@
+:root {
+  --bg: #f4efe6;
+  --panel: #fffaf2;
+  --ink: #1f2a1f;
+  --muted: #5b665a;
+  --accent: #2f6f4f;
+  --accent-2: #d88b33;
+  --line: #d9cfbe;
+  --shadow: 0 20px 50px rgba(47, 111, 79, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top right, rgba(216, 139, 51, 0.18), transparent 30%),
+    linear-gradient(180deg, #fbf8f1 0%, var(--bg) 100%);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  padding: 48px 24px 28px;
+}
+
+.eyebrow {
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin: 0 0 8px;
+}
+
+h1,
+h2 {
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 4rem);
+}
+
+.lead,
+.hint {
+  color: var(--muted);
+  max-width: 720px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+button,
+.ghost-button,
+select,
+input {
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 12px 16px;
+  font: inherit;
+}
+
+button,
+.ghost-button {
+  cursor: pointer;
+  text-decoration: none;
+  background: var(--accent);
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.ghost-button {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  padding: 0 24px 32px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid rgba(217, 207, 190, 0.8);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.metric,
+.list-card {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  border: 1px solid #efe4d2;
+}
+
+.metric strong {
+  display: block;
+  font-size: 1.8rem;
+  margin-top: 6px;
+}
+
+.section-title,
+.filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.pill {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(47, 111, 79, 0.12);
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 720px) {
+  .hero {
+    flex-direction: column;
+  }
+
+  .section-title {
+    align-items: flex-start;
+  }
+}
+
